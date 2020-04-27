@@ -11,6 +11,10 @@ import torch
 import torch.utils.data as data
 import h5py
 
+import rawpy
+import imageio
+import glob
+
 class SRData(data.Dataset):
     def __init__(self, args, train=True, benchmark=False):
         self.args = args
@@ -20,18 +24,27 @@ class SRData(data.Dataset):
         self.scale = args.scale
         self.idx_scale = 0
 
-        if train:
-            mat = h5py.File('../MWCNN/imdb_gray.mat')
-            self.args.ext = 'mat'
-            self.hr_data = mat['images']['labels'][:,:,:,:]
+        # since we have too much data, we don't want to load it all at once
+        if train and False:
+            #mat = h5py.File('../MWCNN/imdb_gray.mat')
+            #self.args.ext = 'mat'
+            #self.hr_data = mat['images']['labels'][:,:,:,:]
+            files = sorted(glob.glob("~/dataset/full/*/*.dng"))
+            dng_list = [];
+            for f in files:
+                with rawpy.imread(f) as raw:
+                    dng_list.append(raw.postprocess())
+            self.hr_data = np.array(dng_list)
+
             self.num = self.hr_data.shape[0]
             print(self.hr_data.shape)
 
         if self.split == 'test':
             self._set_filesystem(args.dir_data)
 
+        # this should be a list of file names
         self.images_hr = self._scan()
-
+        self.num = len(self.images_hr)
 
 
     def _scan(self):
@@ -49,15 +62,10 @@ class SRData(data.Dataset):
     def __getitem__(self, idx):
         hr, filename = self._load_file(idx)
         if self.train:
-
-
             lr, hr, scale = self._get_patch(hr, filename)
-
             lr_tensor, hr_tensor = common.np2Tensor([lr, hr], self.args.rgb_range)
             return lr_tensor, hr_tensor, filename
         else:
-            #scale = 2
-            # scale = self.scale[self.idx_scale]
             lr, hr, _ = self._get_patch(hr, filename)
 
             lr_tensor, hr_tensor = common.np2Tensor([lr, hr], self.args.rgb_range)
@@ -74,8 +82,12 @@ class SRData(data.Dataset):
     def _load_file(self, idx):
         idx = self._get_index(idx)
         # lr = self.images_lr[self.idx_scale][idx]
-        hr = self.images_hr[idx]
+        filename = self.images_hr[idx]
+        print("reading", filename)
+        with rawpy.imread(hr) as raw:
+            hr = raw.postprocess()
 
+        '''
         if self.args.ext == 'img' or self.benchmark:
             filename = hr
 
@@ -91,10 +103,8 @@ class SRData(data.Dataset):
         else:
             filename = str(idx + 1)
 
-
-
-
         filename = os.path.splitext(os.path.split(filename)[-1])[0]
+        '''
 
         return hr, filename
 
