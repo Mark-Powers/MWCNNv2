@@ -61,6 +61,9 @@ def get_patch_noise(img_tar, patch_size, noise_level):
 
     return img_tar_noise, img_tar
 
+def get_patch_clip(img_tar, gain, minimum, maximum):
+    img_tar_clipped = np.clip(img_tar * gain, minimum, maximum)
+    return img_tar_clipped, img_tar
 
 def add_img_noise(img_tar, noise_level):
     img_tar = np.expand_dims(img_tar, axis=2)
@@ -121,16 +124,18 @@ def get_patch_compress(img_tar, patch_size, quality_factor):
 
     tt, _ = math.modf(time.time())
     out = "tmp/" + '%d' % (tt * 1e16) + '.jpg'
-    img_lr = Image.fromarray(np.squeeze(img_tar, axis=2))
+    # I don't think we need to squeeze
+    #img_lr = Image.fromarray(np.squeeze(img_tar, axis=1))
+    img_lr = Image.fromarray(img_tar)
     img_lr.save(out, 'JPEG', quality=quality_factor)
     img_lr = imread(out)
     os.remove(out)
     img_lr = np.expand_dims(img_lr, axis=2)
 
-
     img_tar = img_tar[ty:ty + tp, tx:tx + tp, :]
     img_lr = img_lr[ty:ty + tp, tx:tx + tp, :]
-
+    img_lr = np.squeeze(img_lr, axis=2)
+    #print("final shapes", img_lr.shape, img_tar.shape)
     return img_lr, img_tar
 
 def get_img_compress(img_tar, quality_factor):
@@ -147,7 +152,8 @@ def get_img_compress(img_tar, quality_factor):
     img_lr = imread(out)
     os.remove(out)
     img_lr = np.expand_dims(img_lr, axis=2)
-
+    
+    #print(img_lr.shape, img_tar.shape)
     return img_lr, img_tar
 
 
@@ -197,7 +203,7 @@ def augment(l, hflip=True, rot=True):
     hflip = hflip and random.random() < 0.5
     vflip = rot and random.random() < 0.5
     rot90 = rot and random.random() < 0.5
-
+   
     def _augment(img):
         if hflip: img = img[:, ::-1, :]
         if vflip: img = img[::-1, :, :]

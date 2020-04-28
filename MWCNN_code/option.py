@@ -25,7 +25,7 @@ parser.add_argument('--dir_demo', type=str, default='../test',
                     help='demo image directory')
 parser.add_argument('--data_train', type=str, default='HDR',
                     help='train dataset name')
-parser.add_argument('--data_test', type=str, default='Set5',
+parser.add_argument('--data_test', type=str, default='HDRTest',
                     help='test dataset name')
 parser.add_argument('--img_ext', type=str, default='.bmp',
                     help='test dataset type')
@@ -130,7 +130,7 @@ parser.add_argument('--load', type=str, default='.',
                     help='file name to load')
 parser.add_argument('--resume', type=int, default=0,
                     help='resume from specific checkpoint')
-parser.add_argument('--print_model', action='store_true',
+parser.add_argument('--print_model', action='store_true', default=False,
                     help='print model')
 parser.add_argument('--save_models', action='store_true',
                     help='save all intermediate models')

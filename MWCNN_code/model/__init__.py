@@ -34,7 +34,7 @@ class Model(nn.Module):
             name=args.model,
             cpu=args.cpu
         )
-        if args.print_model: print(self.model)
+        #if args.print_model: print(self.model)
 
     def forward(self, x, idx_scale):
         self.idx_scale = idx_scale

@@ -21,10 +21,10 @@ class Data:
                 args,
                 trainset,
                 batch_size=args.batch_size,
-                shuffle=True,
+                shuffle=True, # TODO might want to change this
                 **kwargs
             )
-
+        
         if args.data_test in ['Set5', 'Set14', 'B100', 'Urban100']:
             if not args.benchmark_noise:
                 module_test = import_module('data.benchmark')

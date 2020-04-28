@@ -678,7 +678,9 @@ class MSDataLoader(DataLoader):
         if batch_sampler is None:
             if sampler is None:
                 if shuffle:
-                    sampler = RandomSampler(dataset)
+                    print(type(dataset))
+                    print(dataset.num)
+                    sampler = RandomSampler(dataset, replacement=True, num_samples=dataset.num)
                 else:
                     sampler = SequentialSampler(dataset)
             batch_sampler = BatchSampler(sampler, batch_size, drop_last)

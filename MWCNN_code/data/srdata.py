@@ -37,7 +37,7 @@ class SRData(data.Dataset):
             self.hr_data = np.array(dng_list)
 
             self.num = self.hr_data.shape[0]
-            print(self.hr_data.shape)
+            #print(self.hr_data.shape)
 
         if self.split == 'test':
             self._set_filesystem(args.dir_data)
@@ -84,7 +84,7 @@ class SRData(data.Dataset):
         # lr = self.images_lr[self.idx_scale][idx]
         filename = self.images_hr[idx]
         print("reading", filename)
-        with rawpy.imread(hr) as raw:
+        with rawpy.imread(filename) as raw:
             hr = raw.postprocess()
 
         '''
@@ -113,6 +113,7 @@ class SRData(data.Dataset):
 
         if self.train:
             scale = self.scale[0]
+            #print("GETTING PATCH", hr.shape)
             if self.args.task_type == 'denoising':
                 lr, hr = common.get_patch_noise(
                     hr, patch_size, scale
@@ -125,7 +126,10 @@ class SRData(data.Dataset):
                 lr, hr = common.get_patch_compress(
                     hr, patch_size, scale
                 )
-
+            if self.args.task_type == 'clip':
+                lr, hr = common.get_patch_clip(
+                    hr, 1.2, 0, 255
+                )
             lr, hr = common.augment([lr, hr])
             return lr, hr, scale
         else:
@@ -141,6 +145,10 @@ class SRData(data.Dataset):
             if self.args.task_type == 'JIAR':
                 lr, hr = common.get_img_compress(
                     hr, patch_size, scale
+                )
+            if self.args.task_type == 'clip':
+                lr, hr = common.get_patch_clip(
+                    hr, 1.2, 0, 255
                 )
             return lr, hr, scale
             # lr = common.add_noise(lr, self.args.noise)
