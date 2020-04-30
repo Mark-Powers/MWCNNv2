@@ -14,6 +14,8 @@ import h5py
 import rawpy
 import imageio
 import glob
+import math
+import time
 
 class SRData(data.Dataset):
     def __init__(self, args, train=True, benchmark=False):
@@ -79,10 +81,12 @@ class SRData(data.Dataset):
         return idx
 
     def _load_file(self, idx):
+        t = time.time()
         idx = self._get_index(idx)
+        subimage_idx = idx%36
+        filename_idx = math.floor(idx/36)
         # lr = self.images_lr[self.idx_scale][idx]
-        filename = self.images_hr[idx]
-        print("reading", filename)
+        filename = self.images_hr[filename_idx]
         with rawpy.imread(filename) as raw:
             hr = raw.postprocess()
 
@@ -91,8 +95,13 @@ class SRData(data.Dataset):
 
         # running this gets out of memory error
         #hr = hr[:3024, :3024, :]
-
-        hr = hr[:512, :512, :]
+        subimage_x_index = subimage_idx % 6
+        subimage_y_index = math.floor(subimage_idx / 6)
+        # we do min to make sure we don't bleed over edge of image
+        x = min(subimage_x_index * 500, hr.shape[0]-512)
+        y = min(subimage_y_index * 500, hr.shape[1]-512)
+        hr = hr[x:x+512, y:y+512, :]
+        print("reading", filename, " - ", time.time()-t," seconds")
         return hr, filename
 
     def _get_patch(self, hr, filename):
