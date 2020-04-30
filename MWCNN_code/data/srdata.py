@@ -81,6 +81,7 @@ class SRData(data.Dataset):
         return idx
 
     def _load_file(self, idx):
+        og_idx = idx
         t = time.time()
         idx = self._get_index(idx)
         subimage_idx = idx%36
@@ -101,7 +102,7 @@ class SRData(data.Dataset):
         x = min(subimage_x_index * 500, hr.shape[0]-512)
         y = min(subimage_y_index * 500, hr.shape[1]-512)
         hr = hr[x:x+512, y:y+512, :]
-        print("reading", filename, " - ", time.time()-t," seconds")
+        print("reading", og_idx, filename, " x:", x, "y:", y, " - ", time.time()-t," seconds")
         return hr, filename
 
     def _get_patch(self, hr, filename):

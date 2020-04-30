@@ -20,10 +20,7 @@ class HDR(srdata.SRData):
 
     def _scan(self):
         print("scan in HDR")
-        if self.train and False:
-            list_hr = [i for i in range(self.num)]
-        else:
-            list_hr = sorted(glob.glob("/home/mppowers/train/*.dng"))
+        list_hr = sorted(glob.glob("/home/mppowers/train/*.dng"))
 
         # we do 512x512 images with ridge 500
         self.num = len(list_hr) * 6 * 6
@@ -33,13 +30,13 @@ class HDR(srdata.SRData):
 
     def __len__(self):
         if self.train:
-            return len(self.images_hr) * self.repeat
+            return len(self.images_hr) * self.repeat * 6 * 6
         else:
             return len(self.images_hr)
 
     def _get_index(self, idx):
         if self.train:
-            return idx % len(self.images_hr)
+            return idx % (len(self.images_hr) * 6 * 6)
         else:
             return idx
 
