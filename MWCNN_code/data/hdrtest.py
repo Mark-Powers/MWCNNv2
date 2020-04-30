@@ -31,7 +31,7 @@ class HDRTest(srdata.SRData):
             #    filename = os.path.splitext(entry.name)[0]
             #    list_hr.append(os.path.join(self.dir_hr, filename + self.ext))
 
-            list_hr = sorted(glob.glob("/home/mppowers/test/*/*.dng"))
+            list_hr = sorted(glob.glob("/home/mppowers/test/*.dng"))
 
             #list_hr.sort()
         self.num = len(list_hr)

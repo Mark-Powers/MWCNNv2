@@ -29,7 +29,7 @@ class HDR(srdata.SRData):
             #for entry in os.scandir(self.dir_hr):
             #    filename = os.path.splitext(entry.name)[0]
             #    list_hr.append(os.path.join(self.dir_hr, filename + self.ext))
-            list_hr = sorted(glob.glob("/home/mppowers/train/*/*.dng"))
+            list_hr = sorted(glob.glob("/home/mppowers/train/*.dng"))
 
             #list_hr.sort()
         self.num = len(list_hr)

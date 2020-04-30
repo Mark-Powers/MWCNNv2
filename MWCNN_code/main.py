@@ -31,7 +31,8 @@ if checkpoint.ok:
     t = Trainer(args, loader, model, loss, checkpoint)
     while not t.terminate():
         t.train()
-        t.test()
+#        t.test()
+        print("should test")
 
     checkpoint.done()
 

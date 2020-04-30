@@ -504,11 +504,19 @@ class _MSDataLoaderIter(object):
 
     def __next__(self):
         if self.num_workers == 0:  # same-process loading
-            indices = next(self.sample_iter)  # may raise StopIteration
-            batch = self.collate_fn([self.dataset[i] for i in indices])
-            if self.pin_memory:
-                batch = pin_memory_batch(batch)
-            return batch
+            # keep trying to get next until no error
+            for j in range(100):
+                indices = next(self.sample_iter)  # may raise StopIteration
+                try:
+                    #for i in indices: 
+                    #    print(i, self.dataset[i][0].shape, self.dataset[i][1].shape)
+                    batch = self.collate_fn([self.dataset[i] for i in indices])
+                    if self.pin_memory:
+                        batch = pin_memory_batch(batch)
+                    return batch
+                except Exception as e:
+                    print("error")
+                    raise e
 
         # check if the next sample has already been generated
         if self.rcvd_idx in self.reorder_dict:

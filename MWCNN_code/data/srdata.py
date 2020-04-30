@@ -29,7 +29,6 @@ class SRData(data.Dataset):
             #mat = h5py.File('../MWCNN/imdb_gray.mat')
             #self.args.ext = 'mat'
             #self.hr_data = mat['images']['labels'][:,:,:,:]
-            files = sorted(glob.glob("~/dataset/full/*/*.dng"))
             dng_list = [];
             for f in files:
                 with rawpy.imread(f) as raw:
@@ -87,25 +86,14 @@ class SRData(data.Dataset):
         with rawpy.imread(filename) as raw:
             hr = raw.postprocess()
 
-        '''
-        if self.args.ext == 'img' or self.benchmark:
-            filename = hr
+        # running this gets unmatched dimensions error
+        #hr = hr[:3024, :4032, :]
 
-            hr = misc.imread(hr)
-        elif self.args.ext.find('sep') >= 0:
-            filename = hr
-            # lr = np.load(lr)
-            hr = np.load(hr)
-        elif self.args.ext == 'mat' or self.train:
-            hr = self.hr_data[idx, :, :, :]
-            hr = np.squeeze(hr.transpose((1, 2, 0)))
-            filename = str(idx) + '.png'
-        else:
-            filename = str(idx + 1)
+        # running this gets out of memory error
+        #hr = hr[:3024, :3024, :]
 
-        filename = os.path.splitext(os.path.split(filename)[-1])[0]
-        '''
-
+        hr = hr[:512, :512, :]
+        print("load file", hr.shape)
         return hr, filename
 
     def _get_patch(self, hr, filename):

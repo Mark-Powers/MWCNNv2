@@ -67,7 +67,8 @@ class Trainer():
             # _, _, hei, wid = hr.data.size()
             self.optimizer.zero_grad()
             idx_scale = 0
-
+            
+            print("in train", lr.shape, idx_scale)
             sr = self.model(lr, idx_scale)
             loss = self.loss(sr, hr)
             if loss.item() < self.args.skip_threshold * self.error_last:

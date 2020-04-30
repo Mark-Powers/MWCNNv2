@@ -63,6 +63,7 @@ def sp_init(x):
     return torch.cat((x_LL, x_HL, x_LH, x_HH), 1)
 
 def dwt_init(x):
+    print("dwt_init", x.shape)
 
     x01 = x[:, :, 0::2, :] / 2
     x02 = x[:, :, 1::2, :] / 2
