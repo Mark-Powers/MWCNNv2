@@ -93,7 +93,6 @@ class SRData(data.Dataset):
         #hr = hr[:3024, :3024, :]
 
         hr = hr[:512, :512, :]
-        print("load file", hr.shape)
         return hr, filename
 
     def _get_patch(self, hr, filename):

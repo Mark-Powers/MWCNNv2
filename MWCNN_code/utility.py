@@ -121,6 +121,8 @@ class checkpoint():
         plt.close(fig)
 
     def save_results(self, filename, save_list, idx, scale):
+        parts = filename.split("/")
+        filename = parts[-1]
         filename = '{}/results/{}_x{}_{}'.format(self.dir, filename, scale, idx)
         postfix = ('SR', 'LR', 'HR')
         for v, p in zip(save_list, postfix):
