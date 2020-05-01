@@ -13,11 +13,10 @@ import glob
 
 class HDRTest(srdata.SRData):
     def __init__(self, args, train=True):
-        print("HDRTest init start")
+        self.glob_argument = args.hdr_test_dir + "*.dng"
         super(HDRTest, self).__init__(args, train)
         self.repeat = 1#args.test_every // (args.n_train // args.batch_size)
         self.num_samples = 1
-        print("HDRTest init ent")
 
     def _scan(self):
         print("scan in HDR")
@@ -31,7 +30,7 @@ class HDRTest(srdata.SRData):
             #    filename = os.path.splitext(entry.name)[0]
             #    list_hr.append(os.path.join(self.dir_hr, filename + self.ext))
 
-            list_hr = sorted(glob.glob("/home/mppowers/test/*.dng"))
+            list_hr = sorted(glob.glob(self.glob_argument))
 
             #list_hr.sort()
         self.num = len(list_hr)

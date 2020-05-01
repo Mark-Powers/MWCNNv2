@@ -125,7 +125,7 @@ class SRData(data.Dataset):
                 )
             if self.args.task_type == 'clip':
                 lr, hr = common.get_patch_clip(
-                    hr, 1.2, 0, 255
+                    hr, self.args.ev, 0, 255
                 )
             lr, hr = common.augment([lr, hr])
             return lr, hr, scale
@@ -145,7 +145,7 @@ class SRData(data.Dataset):
                 )
             if self.args.task_type == 'clip':
                 lr, hr = common.get_patch_clip(
-                    hr, 1.2, 0, 255
+                    hr, self.args.ev, 0, 255
                 )
             return lr, hr, scale
             # lr = common.add_noise(lr, self.args.noise)

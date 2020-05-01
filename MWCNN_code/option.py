@@ -8,6 +8,9 @@ parser.add_argument('--debug', action='store_true',
 parser.add_argument('--template', default='.',
                     help='You can set various templates in option.py')
 
+parser.add_argument('--hdr_train_dir', type=str, default='/home/mppowers/train/')
+parser.add_argument('--hdr_test_dir', type=str, default='/home/mppowers/test/')
+
 # Hardware specifications
 parser.add_argument('--n_threads', type=int, default=12,
                     help='number of threads for data loading')
@@ -53,6 +56,7 @@ parser.add_argument('--chop', action='store_true',
                     help='enable memory-efficient forward')
 parser.add_argument('--task_type', type=str, default='denoising',
                     help='image restoration tasks')
+parser.add_argument('--ev', type=float, default='0.5')
 
 # Model specifications
 parser.add_argument('--model', default='BSR',

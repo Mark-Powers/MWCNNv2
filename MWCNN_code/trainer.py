@@ -12,6 +12,7 @@ import scipy.io as sio
 from data import common
 import numpy as np
 # import model
+import imageio
 
 class Trainer():
     def __init__(self, args, loader, my_model, my_loss, ckp):
@@ -132,6 +133,13 @@ class Trainer():
                     # lr = hr
 
                     sr = self.model(lr, idx_scale)
+                    lr_img = np.clip( np.moveaxis(np.squeeze(lr.cpu().numpy()), 0, 2) * 255, 0, 255).astype(np.uint8)
+                    hr_img = np.clip( np.moveaxis(np.squeeze(hr.cpu().numpy()), 0, 2) * 255, 0, 255).astype(np.uint8)
+                    sr_img = np.clip( np.moveaxis(np.squeeze(sr.cpu().numpy()), 0, 2) * 255, 0, 255).astype(np.uint8)
+                    fn = filename.split("/")[-1]
+                    imageio.imsave("~/output/"+fn+str(idx_img)+"_lr.png", lr_img)
+                    imageio.imsave("~/output/"+fn+str(idx_img)+"_hr.png", hr_img)
+                    imageio.imsave("~/output/"+fn+str(idx_img)+"_sr.png", sr_img)
 
                     sr = utility.quantize(sr, self.args.rgb_range)
 

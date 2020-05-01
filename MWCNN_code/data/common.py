@@ -61,8 +61,8 @@ def get_patch_noise(img_tar, patch_size, noise_level):
 
     return img_tar_noise, img_tar
 
-def get_patch_clip(img_tar, gain, minimum, maximum):
-    img_tar_clipped = np.clip(img_tar * gain, minimum, maximum)
+def get_patch_clip(img_tar, ev, minimum, maximum):
+    img_tar_clipped = np.clip(img_tar * np.power(2,ev) , minimum, maximum).astype(np.uint8)
     return img_tar_clipped, img_tar
 
 def add_img_noise(img_tar, noise_level):

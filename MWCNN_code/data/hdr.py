@@ -13,19 +13,18 @@ import glob
 
 class HDR(srdata.SRData):
     def __init__(self, args, train=True):
-        print("HDR init start")
+        self.glob_argument = args.hdr_train_dir + "*.dng"
         super(HDR, self).__init__(args, train)
         self.repeat = 1#args.test_every // (args.n_train // args.batch_size)
-        print("HDR init ent")
 
     def _scan(self):
         print("scan in HDR")
-        list_hr = sorted(glob.glob("/home/mppowers/train/*.dng"))
+        list_hr = sorted(glob.glob(self.glob_argument))
 
         # we do 512x512 images with ridge 500
         self.num = len(list_hr) * 6 * 6
         self.num_samples = self.num
-        print("self.num", self.num * 25)
+        print("number of training samples: ", self.num)
         return list_hr#[i for i in range(self.num)]#, list_lr
 
     def __len__(self):
