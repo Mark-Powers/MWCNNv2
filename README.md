@@ -1,3 +1,21 @@
+# Dependencies install
+```
+# install python dependencies
+conda create -n cs760 python=3.5
+conda install -n cs760 pytorch=1.0 torchvision=0.2 cudatoolkit -c pytorch
+conda install -n cs760 pillow"<=6.1"
+conda install -n cs760 scipy=1.0
+conda install -n cs760 numpy imageio matplotlib scikit-image tqdm h5py
+conda activate cs760
+
+# install nvidia driver (note check cudatoolkit version for which driver)
+wget http://us.download.nvidia.com/tesla/440.64.00/NVIDIA-Linux-x86_64-440.64.00.run
+sudo apt install gcc
+sudo apt install make
+sudo sh NVIDIA-Linux-x86_64-440.64.00.run 
+```
+
+
 ## Multi-level Wavelet Convolutional Neural Networks
 Our paper has been accepted by [IEEE Access](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8732332)!!
 ## Abstract
