@@ -19,33 +19,20 @@ class HDRTest(srdata.SRData):
         self.num_samples = 1
 
     def _scan(self):
-        print("scan in HDR")
-        if self.train and False:
-            list_hr = [i for i in range(self.num)]
-        else:
-            list_hr = []
-            # list_hr = []
-            # # list_lr = [[] for _ in self.scale]
-            #for entry in os.scandir(self.dir_hr):
-            #    filename = os.path.splitext(entry.name)[0]
-            #    list_hr.append(os.path.join(self.dir_hr, filename + self.ext))
-
-            list_hr = sorted(glob.glob(self.glob_argument))
-
-            #list_hr.sort()
-        self.num = len(list_hr)
+        list_hr = sorted(glob.glob(self.glob_argument))
+        self.num = len(list_hr) * 6 * 6
         self.num_samples = self.num
         return list_hr#[i for i in range(self.num)]#, list_lr
 
     def __len__(self):
         if self.train:
-            return len(self.images_hr) * self.repeat
-        else:
             return len(self.images_hr)
+        else:
+            return len(self.images_hr) * self.repeat * 6 * 6
 
     def _get_index(self, idx):
         if self.train:
-            return idx % len(self.images_hr)
+            return idx % (len(self.images_hr) * 6 * 6)
         else:
             return idx
     # do noting
