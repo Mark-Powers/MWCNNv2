@@ -14,6 +14,7 @@ import scipy.misc as misc
 import torch
 import torch.optim as optim
 import torch.optim.lr_scheduler as lrs
+import adabound
 
 class timer():
     def __init__(self):
@@ -180,6 +181,12 @@ def make_optimizer(args, my_model):
     elif args.optimizer == 'RMSprop':
         optimizer_function = optim.RMSprop
         kwargs = {'eps': args.epsilon}
+    elif args.optimizer == 'AdaBound':
+        optimizer_function = adabound.AdaBound
+        kwargs = {
+            'betas': (args.beta1, args.beta2),
+            'eps': args.epsilon
+        }
 
     kwargs['lr'] = args.lr
     kwargs['weight_decay'] = args.weight_decay
