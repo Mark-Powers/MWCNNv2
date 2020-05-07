@@ -142,7 +142,7 @@ class Trainer():
                     #            print(rgb.max())
                                 wb = np.diagflat(raw.camera_whitebalance.copy()[:-1])
                                 cam2rgb = raw.color_matrix.copy()[:, :-1]
-                                rgb = rgb @ wb
+                                rgb = rgb @ wb if img_type != "lr" else np.clip(rgb @ wb, 0.0, 1.0)
                                 img = rgb @ cam2rgb.T
                                 img[img < 0] = 0
                                 img = common.hlg(img)
