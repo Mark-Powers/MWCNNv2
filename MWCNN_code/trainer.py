@@ -144,6 +144,8 @@ class Trainer():
                                 cam2rgb = raw.color_matrix.copy()[:, :-1]
                                 rgb = rgb @ wb if img_type != "lr" else np.clip(rgb @ wb, 0.0, 1.0)
                                 rgb = np.clip(rgb, 0, rgb[:, :, 1].max())
+                                if img_type == "sr":
+                                    rgb = np.clip(rgb, 0, rgb[:, :, 1].max() - (2.0/255.0))
                                 img = rgb @ cam2rgb.T
                                 img[img < 0] = 0
                                 img = common.hlg(img)
