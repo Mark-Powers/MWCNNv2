@@ -116,7 +116,7 @@ class Trainer():
                 eval_acc = 0
                 self.loader_test.dataset.set_scale(idx_scale)
                 tqdm_test = tqdm(self.loader_test, ncols=120)
-                print(len(self.loader_test))
+                times = []
                 for idx_img, (lr, hr, filename) in enumerate(tqdm_test):
                     np.random.seed(seed=0)
                     filename = filename[0]
@@ -136,7 +136,8 @@ class Trainer():
                     def work():
                         sr = self.model(lr, idx_scale)
                     
-                    timeit.timeit(work, number=1)
+                    times.append(timeit.timeit(work, number=1))
+                    sr = self.model(lr, idx_scale)
                     
                     fn = filename.split("/")[-1]
                     dng_filename = filename+"/payload_N000.dng"
@@ -149,12 +150,12 @@ class Trainer():
                                 rgb = rgb @ wb if img_type != "lr" else np.clip(rgb @ wb, 0.0, 1.0)
                                 rgb = np.clip(rgb, 0, rgb[:, :, 1].max())
                                 if img_type == "sr":
-                                    rgb = np.clip(rgb, 0, rgb[:, :, 1].max() - (2.0/255.0))
+                                    rgb = np.clip(rgb, 0, rgb[:, :, 1].max() - (0.05 ) )
                                 img = rgb @ cam2rgb.T
                                 img[img < 0] = 0
                                 img = common.hlg(img)
                                 img = np.clip(255*img, 0, 255).astype(np.uint8)
-                                print(img_type, np.max(img), np.count_nonzero(img == 0))
+                   #             print(img_type, np.max(img), np.count_nonzero(img == 0))
                                 imageio.imsave("~/output/"+fn+"_"+str(idx_img)+"_"+img_type + ".png", img)
                                 
                     
@@ -187,7 +188,7 @@ class Trainer():
 
 
 
-
+                print("Average time:", sum(times)/len(times))
                 self.ckp.log[-1, idx_scale] = eval_acc / len(self.loader_test)
                 best = self.ckp.log.max(0)
                 self.ckp.write_log(

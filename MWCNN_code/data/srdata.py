@@ -68,7 +68,6 @@ class SRData(data.Dataset):
             return lr_tensor, hr_tensor, filename
         else:
             lr, hr, _ = self._get_patch(hr, filename)
-            print("get_item", np.max(lr), np.max(hr))
             lr_tensor, hr_tensor = common.np2Tensor([lr, hr], self.args.rgb_range)
             return lr_tensor, hr_tensor, filename
 
@@ -98,7 +97,7 @@ class SRData(data.Dataset):
         y = min(subimage_y_index * 500, hr.shape[1]-512)
         hr = hr[x:x+512, y:y+512, :]
         #raw = imageio.imread(filename+"/ref.png")[:512, :512]
-        print("reading", idx, filename+"/ref.png", x, y, " - ", time.time()-t," seconds")
+        print(idx, filename, x, y, time.time()-t," seconds")
         return hr, filename
 
     def _get_patch(self, hr, filename):
