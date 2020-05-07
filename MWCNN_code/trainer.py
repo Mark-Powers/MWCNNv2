@@ -14,6 +14,7 @@ import numpy as np
 # import model
 import imageio
 import rawpy
+import timeit
 
 class Trainer():
     def __init__(self, args, loader, my_model, my_loss, ckp):
@@ -132,7 +133,10 @@ class Trainer():
                     # hr_ = torch.squeeze(hr_)
                     # hr_ = hr_.numpy()
                     # lr = hr
-                    sr = self.model(lr, idx_scale)
+                    def work():
+                        sr = self.model(lr, idx_scale)
+                    
+                    timeit.timeit(work, number=1)
                     
                     fn = filename.split("/")[-1]
                     dng_filename = filename+"/payload_N000.dng"
