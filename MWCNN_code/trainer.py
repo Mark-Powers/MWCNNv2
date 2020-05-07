@@ -134,9 +134,11 @@ class Trainer():
                     # hr_ = hr_.numpy()
                     # lr = hr
                     def work():
+                        return
                         sr = self.model(lr, idx_scale)
                     
                     times.append(timeit.timeit(work, number=1))
+                    # Since timeit doesn't return or assign sr 
                     sr = self.model(lr, idx_scale)
                     
                     fn = filename.split("/")[-1]
@@ -150,7 +152,7 @@ class Trainer():
                                 rgb = rgb @ wb if img_type != "lr" else np.clip(rgb @ wb, 0.0, 1.0)
                                 rgb = np.clip(rgb, 0, rgb[:, :, 1].max())
                                 if img_type == "sr":
-                                    rgb = np.clip(rgb, 0, rgb[:, :, 1].max() - (0.05 ) )
+                                    rgb = np.clip(rgb, 0, rgb[:, :, 1].max() - (0.1 ) )
                                 img = rgb @ cam2rgb.T
                                 img[img < 0] = 0
                                 img = common.hlg(img)

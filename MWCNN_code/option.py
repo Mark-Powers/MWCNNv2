@@ -9,7 +9,7 @@ parser.add_argument('--template', default='.',
                     help='You can set various templates in option.py')
 
 parser.add_argument('--hdr_train_dir', type=str, default='/home/mppowers/train/')
-parser.add_argument('--hdr_test_dir', type=str, default='/home/mppowers/test/')
+parser.add_argument('--hdr_test_dir', type=str, default='/home/mppowers/validation/')
 
 # Hardware specifications
 parser.add_argument('--n_threads', type=int, default=12,
