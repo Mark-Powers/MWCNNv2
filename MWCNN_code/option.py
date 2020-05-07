@@ -46,7 +46,7 @@ parser.add_argument('--scale', default='2',
                     help='super resolution scale')
 parser.add_argument('--patch_size', type=int, default=384,
                     help='output patch size')
-parser.add_argument('--rgb_range', type=int, default=1,
+parser.add_argument('--rgb_range', type=int, default=255,
                     help='maximum value of RGB')
 parser.add_argument('--n_colors', type=int, default=3,
                     help='number of color channels to use')

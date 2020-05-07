@@ -68,11 +68,13 @@ def get_patch_noise(img_tar, patch_size, noise_level):
     return img_tar_noise, img_tar
 
 def get_patch_clip(img_tar, ev, minimum, maximum):
+    print("CLIP")
     img_tar_clipped = np.clip(img_tar * np.power(2,ev) , minimum, maximum).astype(np.uint8)
     return img_tar_clipped, img_tar
 
 def linearize_and_scale(img, scale_to, clip_at):
-    linear = (np.power(113, img) - 1)/112
+    #print("l&s3", np.count_nonzero((np.power(113.0, img/255.0)-1)/112.0 == 0))
+    linear = (np.power(113.0, img/255.0) - 1.0)/112.0
     m = np.max(linear)
     new_image = (linear/m) * scale_to
     new_image_clipped = np.clip(new_image, 0, clip_at)

@@ -147,7 +147,7 @@ class Trainer():
                                 img[img < 0] = 0
                                 img = common.hlg(img)
                                 img = np.clip(255*img, 0, 255).astype(np.uint8)
-                                print(np.max(img))
+                                print(img_type, np.max(img), np.count_nonzero(img == 0))
                                 imageio.imsave("~/output/"+fn+"_"+str(idx_img)+"_"+img_type + ".png", img)
                                 
                     

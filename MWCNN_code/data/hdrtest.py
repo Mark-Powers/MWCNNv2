@@ -26,7 +26,10 @@ class HDRTest(srdata.SRData):
         return list_hr#[i for i in range(self.num)]#, list_lr
 
     def __len__(self):
-        return len(self.images_hr) * 2 * 2
+        if self.args.test_only:
+            return len(self.images_hr) * 2 * 2
+        else:
+            return len(self.images_hr)
 
     def _get_index(self, idx):
         return idx % (len(self.images_hr) * 2 * 2)
