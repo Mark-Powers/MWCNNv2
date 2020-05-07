@@ -26,9 +26,9 @@ parser.add_argument('--dir_data', type=str, default='/share/Dataset/',
                     help='dataset directory')
 parser.add_argument('--dir_demo', type=str, default='../test',
                     help='demo image directory')
-parser.add_argument('--data_train', type=str, default='HDR',
+parser.add_argument('--data_train', type=str, default='HDR_png',
                     help='train dataset name')
-parser.add_argument('--data_test', type=str, default='HDRTest',
+parser.add_argument('--data_test', type=str, default='HDRTest_png',
                     help='test dataset name')
 parser.add_argument('--img_ext', type=str, default='.bmp',
                     help='test dataset type')
@@ -85,7 +85,7 @@ parser.add_argument('--reset', action='store_true',
                     help='reset the training')
 parser.add_argument('--test_every', type=int, default=12,
                     help='do test per every N batches')
-parser.add_argument('--epochs', type=int, default=1000,
+parser.add_argument('--epochs', type=int, default=40,
                     help='number of epochs to train')
 parser.add_argument('--batch_size', type=int, default=32,
                     help='input batch size for training')

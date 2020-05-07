@@ -13,6 +13,7 @@ from data import common
 import numpy as np
 # import model
 import imageio
+import rawpy
 
 class Trainer():
     def __init__(self, args, loader, my_model, my_loss, ckp):
@@ -113,8 +114,8 @@ class Trainer():
             for idx_scale, scale in enumerate(scale_list):
                 eval_acc = 0
                 self.loader_test.dataset.set_scale(idx_scale)
-
                 tqdm_test = tqdm(self.loader_test, ncols=120)
+                print(len(self.loader_test))
                 for idx_img, (lr, hr, filename) in enumerate(tqdm_test):
                     np.random.seed(seed=0)
                     filename = filename[0]
@@ -131,8 +132,26 @@ class Trainer():
                     # hr_ = torch.squeeze(hr_)
                     # hr_ = hr_.numpy()
                     # lr = hr
-
                     sr = self.model(lr, idx_scale)
+                    
+                    fn = filename.split("/")[-1]
+                    dng_filename = filename+"/payload_N000.dng"
+                    with rawpy.imread(dng_filename) as raw:
+                        for img_type, array in [("hr", hr), ("lr", lr), ("sr", sr)]:
+                                rgb = np.moveaxis(np.squeeze(array.cpu().numpy()), 0, 2)
+                    #            print(rgb.max())
+                                wb = np.diagflat(raw.camera_whitebalance.copy()[:-1])
+                                cam2rgb = raw.color_matrix.copy()[:, :-1]
+                                rgb = rgb @ wb
+                                img = rgb @ cam2rgb.T
+                                img[img < 0] = 0
+                                img = common.hlg(img)
+                                img = np.clip(255*img, 0, 255).astype(np.uint8)
+                                print(np.max(img))
+                                imageio.imsave("~/output/"+fn+"_"+str(idx_img)+"_"+img_type + ".png", img)
+                                
+                    
+                    '''
                     lr_img = np.clip( np.moveaxis(np.squeeze(lr.cpu().numpy()), 0, 2) * 255, 0, 255).astype(np.uint8)
                     hr_img = np.clip( np.moveaxis(np.squeeze(hr.cpu().numpy()), 0, 2) * 255, 0, 255).astype(np.uint8)
                     sr_img = np.clip( np.moveaxis(np.squeeze(sr.cpu().numpy()), 0, 2) * 255, 0, 255).astype(np.uint8)
@@ -140,7 +159,7 @@ class Trainer():
                     imageio.imsave("~/output/"+fn+str(idx_img)+"_lr.png", lr_img)
                     imageio.imsave("~/output/"+fn+str(idx_img)+"_hr.png", hr_img)
                     imageio.imsave("~/output/"+fn+str(idx_img)+"_sr.png", sr_img)
-
+                    '''
                     sr = utility.quantize(sr, self.args.rgb_range)
 
                     save_list = [sr]

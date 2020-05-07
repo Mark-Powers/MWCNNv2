@@ -11,13 +11,14 @@ import torch.utils.data as data
 
 import glob
 
-class HDRTest(srdata.SRData):
+class HDR_png(srdata.SRData):
     def __init__(self, args, train=True):
-        self.glob_argument = args.hdr_test_dir + "*"
-        super(HDRTest, self).__init__(args, train)
+        self.glob_argument = args.hdr_train_dir + "*"
+        super(HDR_png, self).__init__(args, train)
         self.repeat = 1#args.test_every // (args.n_train // args.batch_size)
 
     def _scan(self):
+        print("scan in HDR")
         list_hr = sorted(glob.glob(self.glob_argument))
 
         self.num = len(list_hr)

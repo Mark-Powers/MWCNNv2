@@ -17,6 +17,12 @@ from scipy.misc import imread, imresize, imsave, toimage
 from scipy.ndimage import convolve
 from PIL import Image
 
+def hlg(rgb):
+    rgb[rgb < 0] = 0
+    mask = rgb > 1
+    rgb[mask] = 0.17883277 * np.log(rgb[mask] - 0.28466892) + 0.55991073
+    rgb[~mask] = 0.5 * np.sqrt(rgb[~mask])
+    return rgb
 
 def get_patch_noise(img_tar, patch_size, noise_level):
 
@@ -64,6 +70,13 @@ def get_patch_noise(img_tar, patch_size, noise_level):
 def get_patch_clip(img_tar, ev, minimum, maximum):
     img_tar_clipped = np.clip(img_tar * np.power(2,ev) , minimum, maximum).astype(np.uint8)
     return img_tar_clipped, img_tar
+
+def linearize_and_scale(img, scale_to, clip_at):
+    linear = (np.power(113, img) - 1)/112
+    m = np.max(linear)
+    new_image = (linear/m) * scale_to
+    new_image_clipped = np.clip(new_image, 0, clip_at)
+    return new_image_clipped, new_image
 
 def add_img_noise(img_tar, noise_level):
     img_tar = np.expand_dims(img_tar, axis=2)
@@ -176,7 +189,7 @@ def np2Tensor(l, rgb_range):
     def _np2Tensor(img):
         np_transpose = np.ascontiguousarray(img.transpose((2, 0, 1)))
         tensor = torch.from_numpy(np_transpose).float()
-        tensor.mul_(rgb_range / 255.0)
+        #tensor.mul_(rgb_range / 255.0)
 
         return tensor
 

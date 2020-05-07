@@ -68,9 +68,8 @@ class SRData(data.Dataset):
             return lr_tensor, hr_tensor, filename
         else:
             lr, hr, _ = self._get_patch(hr, filename)
-
+            print("get_item", np.max(lr), np.max(hr))
             lr_tensor, hr_tensor = common.np2Tensor([lr, hr], self.args.rgb_range)
-
             return lr_tensor, hr_tensor, filename
 
 
@@ -81,28 +80,25 @@ class SRData(data.Dataset):
         return idx
 
     def _load_file(self, idx):
-        og_idx = idx
         t = time.time()
+        
+        og_idx = idx
         idx = self._get_index(idx)
-        subimage_idx = idx%36
-        filename_idx = math.floor(idx/36)
+        subimage_idx = idx%4
+        filename_idx = math.floor(idx/4)
         # lr = self.images_lr[self.idx_scale][idx]
         filename = self.images_hr[filename_idx]
-        with rawpy.imread(filename) as raw:
-            hr = raw.postprocess()
-
-        # running this gets unmatched dimensions error
-        #hr = hr[:3024, :4032, :]
-
-        # running this gets out of memory error
-        #hr = hr[:3024, :3024, :]
-        subimage_x_index = subimage_idx % 6
-        subimage_y_index = math.floor(subimage_idx / 6)
+        #with rawpy.imread(filename) as raw:
+        #    hr = raw.postprocess()
+        hr = imageio.imread(filename+"/ref.png")
+        subimage_x_index = subimage_idx % 2
+        subimage_y_index = math.floor(subimage_idx / 2)
         # we do min to make sure we don't bleed over edge of image
         x = min(subimage_x_index * 500, hr.shape[0]-512)
         y = min(subimage_y_index * 500, hr.shape[1]-512)
         hr = hr[x:x+512, y:y+512, :]
-        print("reading", og_idx, filename, " x:", x, "y:", y, " - ", time.time()-t," seconds")
+        #raw = imageio.imread(filename+"/ref.png")[:512, :512]
+        print("reading", idx, filename+"/ref.png", x, y, " - ", time.time()-t," seconds")
         return hr, filename
 
     def _get_patch(self, hr, filename):
@@ -127,6 +123,11 @@ class SRData(data.Dataset):
                 lr, hr = common.get_patch_clip(
                     hr, self.args.ev, 0, 255
                 )
+            if self.args.task_type == 'log':
+                lr, hr = common.linearize_and_scale(
+                    hr, scale_to=2.0, clip_at=1.0
+                )
+            #print("LR", lr[0, :5],"\nHR", hr[0, :5])
             lr, hr = common.augment([lr, hr])
             return lr, hr, scale
         else:
@@ -146,6 +147,10 @@ class SRData(data.Dataset):
             if self.args.task_type == 'clip':
                 lr, hr = common.get_patch_clip(
                     hr, self.args.ev, 0, 255
+                )
+            if self.args.task_type == 'log':
+                lr, hr = common.linearize_and_scale(
+                    hr, scale_to=2.0, clip_at=1.0
                 )
             return lr, hr, scale
             # lr = common.add_noise(lr, self.args.noise)
